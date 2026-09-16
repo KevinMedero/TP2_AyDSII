@@ -1,6 +1,7 @@
 package com.aydsii.tp2.service;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -57,5 +58,35 @@ public class VentaService {
         estadisticas.setProductoMasVendido(productoMasVendido);
         
         return estadisticas;
+    }
+
+    // EJ 1 - Endpoint 2
+    public Map<String, Object> aplicarDescuento(List<VentaDTO> ventas, Double porcentaje) {
+        if (ventas == null || ventas.isEmpty()) {
+            throw new IllegalArgumentException("La lista de ventas no puede estar vacia");
+        }
+
+        if (porcentaje == null || porcentaje < 0 || porcentaje > 100) {
+            throw new IllegalArgumentException("El porcentaje de descuento debe ser un valor entre 0 y 100 inclusive");
+        }
+
+        double factorDescuento = (100.0 - porcentaje) / 100.0;
+
+        List<VentaDTO> ventasConDescuento = ventas.stream().map(v -> {
+            VentaDTO dto = new VentaDTO(v.getProducto(), v.getCantidad(), v.getPrecioUnitario());
+            double montoConDescuento = v.getImporteTotal() * factorDescuento;
+            dto.setMontoConDescuento(montoConDescuento);
+            return dto;
+        }).collect(Collectors.toList());
+
+        double totalConDescuento = ventasConDescuento.stream()
+                .mapToDouble(VentaDTO::getMontoConDescuento)
+                .sum();
+
+        Map<String, Object> resultado = new HashMap<>();
+        resultado.put("ventas", ventasConDescuento);
+        resultado.put("totalConDescuento", totalConDescuento);
+
+        return resultado;
     }
 }
