@@ -4,10 +4,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public class ApiResponse<T> {
     
-    @Schema(description = "Código de estado HTTP como número")
+    @Schema(description = "Código de estado HTTP como número", example = "200")
     private int status;
 
-    @Schema(description = "Mensaje descriptivo del resultado")
+    @Schema(description = "Mensaje descriptivo del resultado", example = "Operacion realizada con exito")
     private String message;
 
     @Schema(description = "Contenido real de la respuesta")
